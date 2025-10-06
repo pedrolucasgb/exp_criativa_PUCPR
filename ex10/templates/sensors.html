@@ -1,0 +1,16 @@
+{% extends 'base01.html' %}
+
+{% block title %}Lista de Sensores{% endblock %}
+
+{% block content %}
+  <h2>Lista de Sensores</h2>
+  {% if sensores %}
+    <ul>
+    {% for key, val in sensores.items() %}
+      <li>{{ key }}: <strong>{{ val }}</strong></li>
+    {% endfor %}
+    </ul>
+  {% else %}
+    <p>Nenhum sensor disponível.</p>
+  {% endif %}
+{% endblock %}

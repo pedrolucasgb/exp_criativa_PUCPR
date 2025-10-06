@@ -1,0 +1,28 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>{{ title }}</title>
+  </head>
+  <body>
+    <h2>{{ title }}</h2>
+    <p>Comodo: {{ room }}</p>
+    <p>Nome: {{ name }}</p>
+    {% if value is defined and value is not none %}
+      <p>Valor do sensor: <strong>{{ value }}</strong></p>
+    {% endif %}
+    {% if state is defined and state is not none %}
+      <p>Estado do atuador: <strong>
+        {% if state == 1 or state == '1' %}
+          Ligado
+        {% elif state == 0 or state == '0' %}
+          Desligado
+        {% else %}
+          {{ state }}
+        {% endif %}
+      </strong></p>
+    {% endif %}
+    <p><a href="/{{ room }}">Voltar</a></p>
+    <p><a href="/">Menu Principal</a></p>
+  </body>
+</html>
