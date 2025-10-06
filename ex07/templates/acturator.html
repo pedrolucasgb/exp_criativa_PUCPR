@@ -5,11 +5,11 @@
     <title>Lista de Atuadores</title>
   </head>
   <body>
-    <h2>Lista de Atuadores (template)</h2>
+    <h2>Lista de Atuadores</h2>
     {% if actuators %}
       <ul>
-      {% for key, label in actuators.items() %}
-        <li>{{ label }} {% if key %}(<code>{{ key }}</code>){% endif %}</li>
+      {% for key, state in actuators.items() %}
+        <li>{{ key }}: <strong>{{ state }}</strong></li>
       {% endfor %}
       </ul>
     {% else %}

@@ -1,0 +1,17 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>{{ room_name }}</title>
+  </head>
+  <body>
+    <h2>{{ room_name }}</h2>
+    <h3>Escolha:</h3>
+    <ul>
+      {% for link, label in items %}
+        <li><a href="{{ link }}">{{ label }}</a></li>
+      {% endfor %}
+    </ul>
+    <p><a href="/">Voltar ao menu</a></p>
+  </body>
+</html>

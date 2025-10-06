@@ -8,8 +8,17 @@
     <h2>Lista de Atuadores</h2>
     {% if actuators %}
       <ul>
-      {% for key, label in actuators.items() %}
-        <li>{{ label }} {% if key %}(<code>{{ key }}</code>){% endif %}</li>
+      {% for key, state in actuators.items() %}
+        <li>
+          {{ key }}:
+          {% if state == 1 %}
+            <strong>Ligado</strong>
+          {% elif state == 0 %}
+            <strong>Desligado</strong>
+          {% else %}
+            <strong>{{ state }}</strong>
+          {% endif %}
+        </li>
       {% endfor %}
       </ul>
     {% else %}

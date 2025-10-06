@@ -42,7 +42,12 @@ def sensors():
 
 @app.route('/actuators')
 def actuators():
-    return render_template('acturator.html')
+  actuators = {
+    'rele': 'Relé',
+    'servo': 'Servo',
+    'led': 'LED'
+  }
+  return render_template('acturator.html', actuators=actuators)
 
 
 if __name__ == '__main__':
