@@ -1,0 +1,25 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Login</title>
+  </head>
+  <body>
+    <h2>Login</h2>
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+        <ul>
+        {% for m in messages %}
+          <li style="color: red">{{ m }}</li>
+        {% endfor %}
+        </ul>
+      {% endif %}
+    {% endwith %}
+    <form action="/validate_user" method="post">
+      <label>Usuário: <input type="text" name="username"></label><br>
+      <label>Senha: <input type="password" name="password"></label><br>
+      <button type="submit">Entrar</button>
+    </form>
+    <p><a href="/">Voltar</a></p>
+  </body>
+</html>
