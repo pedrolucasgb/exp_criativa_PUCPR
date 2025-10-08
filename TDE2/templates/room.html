@@ -1,0 +1,21 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>{{ room_name }}</title>
+  </head>
+  <body>
+    <h2>{{ room_name }}</h2>
+    <h3>Escolha:</h3>
+    {% if items %}
+      <ul>
+      {% for label, url in items.items() %}
+        <li><a href="{{ url }}">{{ label }}</a></li>
+      {% endfor %}
+      </ul>
+    {% else %}
+      <p>Nenhum item no cômodo.</p>
+    {% endif %}
+    <p><a href="/">Voltar ao menu</a></p>
+  </body>
+</html>
