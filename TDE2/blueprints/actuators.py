@@ -1,4 +1,5 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash
+from flask_login import login_required
 
 actuators_bp = Blueprint('actuators_bp', __name__, template_folder='../templates')
 
@@ -7,11 +8,13 @@ atuadores = {'Interruptor': 1, 'Lampada': 0}
 
 
 @actuators_bp.route('/')
+@login_required
 def list_actuators():
     return render_template('list_actuators.html', actuators=atuadores)
 
 
 @actuators_bp.route('/register', methods=['GET'])
+@login_required
 def register_actuator():
     return render_template('register_actuator.html')
 
@@ -36,6 +39,7 @@ def add_actuator():
 
 
 @actuators_bp.route('/delete', methods=['GET'])
+@login_required
 def delete_actuator_form():
     return render_template('delete_actuator.html', atuadores=atuadores)
 

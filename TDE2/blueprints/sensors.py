@@ -1,4 +1,5 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash
+from flask_login import login_required
 
 sensors_bp = Blueprint('sensors_bp', __name__, template_folder='../templates')
 
@@ -7,11 +8,13 @@ sensores = {'Umidade': 22, 'Temperatura': 23}
 
 
 @sensors_bp.route('/')
+@login_required
 def list_sensors():
     return render_template('list_sensors.html', sensores=sensores)
 
 
 @sensors_bp.route('/register', methods=['GET'])
+@login_required
 def register_sensor():
     return render_template('register_sensor.html')
 
@@ -34,6 +37,7 @@ def add_sensor():
 
 
 @sensors_bp.route('/delete', methods=['GET'])
+@login_required
 def delete_sensor_form():
     return render_template('delete_sensor.html', sensores=sensores)
 
