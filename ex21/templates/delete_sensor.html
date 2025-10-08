@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <h2>Remover Sensor</h2>
+  <form action="/delete_sensor" method="post">
+    <label>Escolha o sensor:
+      <select name="name">
+        {% for n in sensores.keys() %}
+          <option value="{{ n }}">{{ n }}</option>
+        {% endfor %}
+      </select>
+    </label>
+    <button type="submit">Remover</button>
+  </form>
+  <p><a href="/">Voltar</a></p>
+{% endblock %}
