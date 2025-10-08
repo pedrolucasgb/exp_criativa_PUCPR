@@ -1,0 +1,16 @@
+{% extends 'base01.html' %}
+
+{% block title %}Devices - {{ room_name | default('Comodo') }}{% endblock %}
+
+{% block content %}
+  <h2>{{ section_title | default('Devices') }}</h2>
+  {% if devices %}
+    <ul>
+    {% for key, val in devices.items() %}
+      <li>{{ key }}: <strong>{{ val }}</strong></li>
+    {% endfor %}
+    </ul>
+  {% else %}
+    <p>Nenhum device disponível.</p>
+  {% endif %}
+{% endblock %}

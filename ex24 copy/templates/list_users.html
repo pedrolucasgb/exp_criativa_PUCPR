@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <h2>Usuários cadastrados</h2>
+  {% if users %}
+    <ul>
+    {% for u, p in users.items() %}
+      <li>{{ u }}</li>
+    {% endfor %}
+    </ul>
+  {% else %}
+    <p>Nenhum usuário cadastrado.</p>
+  {% endif %}
+  <p><a href="/">Voltar</a></p>
+{% endblock %}

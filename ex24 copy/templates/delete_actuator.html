@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <h2>Remover Atuador</h2>
+  <form action="/delete_actuator" method="post">
+    <label>Escolha o atuador:
+      <select name="name">
+        {% for n in atuadores.keys() %}
+          <option value="{{ n }}">{{ n }}</option>
+        {% endfor %}
+      </select>
+    </label>
+    <button type="submit">Remover</button>
+  </form>
+  <p><a href="/">Voltar</a></p>
+{% endblock %}

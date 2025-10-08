@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <h2>Cadastrar Sensor</h2>
+  <form action="/add_sensor" method="post">
+    <label>Nome do sensor: <input type="text" name="name"></label><br>
+    <label>Valor inicial: <input type="text" name="value"></label><br>
+    <button type="submit">Cadastrar</button>
+  </form>
+  <p><a href="/">Voltar</a></p>
+{% endblock %}

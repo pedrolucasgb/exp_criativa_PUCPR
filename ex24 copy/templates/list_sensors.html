@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <h2>Sensores cadastrados</h2>
+  {% if sensores %}
+    <ul>
+    {% for k, v in sensores.items() %}
+      <li>{{ k }}: {{ v }}</li>
+    {% endfor %}
+    </ul>
+  {% else %}
+    <p>Nenhum sensor cadastrado.</p>
+  {% endif %}
+  <p><a href="/">Voltar</a></p>
+{% endblock %}
