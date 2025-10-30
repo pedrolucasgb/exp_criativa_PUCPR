@@ -27,6 +27,9 @@
                     <div class="device-status {{ 'status-active' if sensor.device.is_active else 'status-inactive' }}">
                         {{ 'Active' if sensor.device.is_active else 'Inactive' }}
                     </div>
+                    <div class="device-actions">
+                        <a href="{{ url_for('sensor_.edit_sensor', id=sensor.device.id) }}" class="btn-secondary">Edit</a>
+                    </div>
                 </div>
                 {% else %}
                 <div class="empty-state">
@@ -49,6 +52,9 @@
                     <div class="device-info">State: {{ 'ON' if actuator.state else 'OFF' }}</div>
                     <div class="device-status {{ 'status-active' if actuator.device.is_active else 'status-inactive' }}">
                         {{ 'Active' if actuator.device.is_active else 'Inactive' }}
+                    </div>
+                    <div class="device-actions">
+                        <a href="{{ url_for('actuator_.edit_actuator', id=actuator.device.id) }}" class="btn-secondary">Edit</a>
                     </div>
                 </div>
                 {% else %}

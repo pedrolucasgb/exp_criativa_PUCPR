@@ -29,3 +29,42 @@ def add_actuator():
         flash(f'Error registering actuator: {str(e)}', 'error')
         
     return redirect(url_for('auth.dashboard'))
+
+@actuator_.route('/edit_actuator')
+@login_required
+def edit_actuator():
+    id = request.args.get('id')
+    if not id:
+        flash('Actuator ID is required', 'error')
+        return redirect(url_for('auth.dashboard'))
+    
+    actuator = Actuator.get_single_actuator(id)
+    if not actuator:
+        flash('Actuator not found', 'error')
+        return redirect(url_for('auth.dashboard'))
+    
+    return render_template("update_actuator.html", actuator=actuator)
+
+@actuator_.route('/update_actuator', methods=['POST'])
+@login_required
+def update_actuator():
+    try:
+        id = request.form.get("id")
+        name = request.form.get("name")
+        brand = request.form.get("brand")
+        model = request.form.get("model")
+        command_topic = request.form.get("command_topic")
+        is_active = True if request.form.get("is_active") == "on" else False
+        
+        success, result = Actuator.update_actuator(id, name, brand, model, command_topic, is_active)
+        
+        if success:
+            flash('Actuator updated successfully!', 'success')
+            return redirect(url_for('auth.dashboard'))
+        else:
+            flash(f'Error updating actuator: {result}', 'error')
+            return redirect(url_for('actuator_.edit_actuator', id=id))
+            
+    except Exception as e:
+        flash(f'Error updating actuator: {str(e)}', 'error')
+        return redirect(url_for('actuator_.edit_actuator', id=id))

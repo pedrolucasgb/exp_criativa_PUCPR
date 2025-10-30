@@ -27,5 +27,42 @@ class Actuator(db.Model):
             db.session.rollback()
             return False, str(e)
     
+    @staticmethod
+    def get_single_actuator(id):
+        actuator = db.session.query(Actuator, Device)\
+            .join(Device)\
+            .filter(Device.id == id)\
+            .first()
+        return actuator if actuator else None
+
+    @staticmethod
+    def get_actuators():
+        return db.session.query(Actuator, Device)\
+            .join(Device)\
+            .all()
+
+    @staticmethod
+    def update_actuator(id, name, brand, model, command_topic, is_active):
+        try:
+            device = Device.query.filter_by(id=id).first()
+            if not device:
+                return False, "Device not found"
+            
+            actuator = Actuator.query.filter_by(device_id=id).first()
+            if not actuator:
+                return False, "Actuator not found"
+            
+            device.name = name
+            device.brand = brand
+            device.model = model
+            device.is_active = is_active
+            actuator.command_topic = command_topic
+            
+            db.session.commit()
+            return True, Actuator.get_actuators()
+        except Exception as e:
+            db.session.rollback()
+            return False, str(e)
+
     def __repr__(self):
         return f'<Actuator {self.command_topic}>'
