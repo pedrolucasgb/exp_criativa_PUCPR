@@ -1,0 +1,78 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+<div class="dashboard-container">
+    <div class="dashboard-header">
+        <h1>Welcome, {{ current_user.username }}!</h1>
+        <div class="dashboard-actions">
+            <a href="{{ url_for('sensor_.register_sensor') }}" class="btn-primary">Add Sensor</a>
+            <a href="{{ url_for('actuator_.register_actuator') }}" class="btn-primary">Add Actuator</a>
+            <a href="{{ url_for('auth.logout') }}" class="logout-btn">Logout</a>
+        </div>
+    </div>
+
+    <div class="dashboard-content">
+        <div class="device-section">
+            <h2>Sensors</h2>
+            <div class="device-grid">
+                {% for sensor in sensors %}
+                <div class="device-card">
+                    <h3>{{ sensor.device.name }}</h3>
+                    <div class="device-info">Brand: {{ sensor.device.brand }}</div>
+                    <div class="device-info">Model: {{ sensor.device.model }}</div>
+                    <div class="device-info">Topic: {{ sensor.topic }}</div>
+                    <div class="device-info">Unit: {{ sensor.unit }}</div>
+                    <div class="device-status {{ 'status-active' if sensor.device.is_active else 'status-inactive' }}">
+                        {{ 'Active' if sensor.device.is_active else 'Inactive' }}
+                    </div>
+                    <div class="device-actions">
+                        <a href="{{ url_for('sensor_.edit_sensor', id=sensor.device.id) }}" class="btn-secondary">Edit</a>
+                        <form action="{{ url_for('sensor_.delete_sensor') }}" method="POST" class="inline-form" onsubmit="return confirm('Are you sure you want to delete this sensor?');">
+                            <input type="hidden" name="id" value="{{ sensor.device.id }}">
+                            <button type="submit" class="btn-danger">Delete</button>
+                        </form>
+                    </div>
+                </div>
+                {% else %}
+                <div class="empty-state">
+                    <p>No sensors registered yet.</p>
+                    <a href="{{ url_for('sensor_.register_sensor') }}" class="btn-primary">Register your first sensor</a>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <div class="device-section">
+            <h2>Actuators</h2>
+            <div class="device-grid">
+                {% for actuator in actuators %}
+                <div class="device-card">
+                    <h3>{{ actuator.device.name }}</h3>
+                    <div class="device-info">Brand: {{ actuator.device.brand }}</div>
+                    <div class="device-info">Model: {{ actuator.device.model }}</div>
+                    <div class="device-info">Command Topic: {{ actuator.command_topic }}</div>
+                    <div class="device-info">State: {{ 'ON' if actuator.state else 'OFF' }}</div>
+                    <div class="device-status {{ 'status-active' if actuator.device.is_active else 'status-inactive' }}">
+                        {{ 'Active' if actuator.device.is_active else 'Inactive' }}
+                    </div>
+                    <div class="device-actions">
+                        <a href="{{ url_for('actuator_.edit_actuator', id=actuator.device.id) }}" class="btn-secondary">Edit</a>
+                        <form action="{{ url_for('actuator_.delete_actuator') }}" method="POST" class="inline-form" onsubmit="return confirm('Are you sure you want to delete this actuator?');">
+                            <input type="hidden" name="id" value="{{ actuator.device.id }}">
+                            <button type="submit" class="btn-danger">Delete</button>
+                        </form>
+                    </div>
+                </div>
+                {% else %}
+                <div class="empty-state">
+                    <p>No actuators registered yet.</p>
+                    <a href="{{ url_for('actuator_.register_actuator') }}" class="btn-primary">Register your first actuator</a>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
