@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+
+{% block title %}IoT Dashboard{% endblock %}
+
+{% block content %}
+<div class="dashboard-container">
+    <h1>IoT Device Dashboard</h1>
+    
+    <div class="device-grid">
+        <div class="device-section">
+            <h2>Sensors</h2>
+            {% for sensor in sensors %}
+            <div class="device-card">
+                <h3>{{ sensor.device.name }}</h3>
+                <div class="device-info">Brand: {{ sensor.device.brand }}</div>
+                <div class="device-info">Model: {{ sensor.device.model }}</div>
+                <div class="device-info">Topic: {{ sensor.topic }}</div>
+                <div class="device-info">Unit: {{ sensor.unit }}</div>
+                <div class="device-status {{ 'status-active' if sensor.device.is_active else 'status-inactive' }}">
+                    {{ 'Active' if sensor.device.is_active else 'Inactive' }}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        
+        <div class="device-section">
+            <h2>Actuators</h2>
+            {% for actuator in actuators %}
+            <div class="device-card">
+                <h3>{{ actuator.device.name }}</h3>
+                <div class="device-info">Brand: {{ actuator.device.brand }}</div>
+                <div class="device-info">Model: {{ actuator.device.model }}</div>
+                <div class="device-info">Command Topic: {{ actuator.command_topic }}</div>
+                <div class="device-info">State: {{ 'ON' if actuator.state else 'OFF' }}</div>
+                <div class="device-status {{ 'status-active' if actuator.device.is_active else 'status-inactive' }}">
+                    {{ 'Active' if actuator.device.is_active else 'Inactive' }}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}
