@@ -29,6 +29,10 @@
                     </div>
                     <div class="device-actions">
                         <a href="{{ url_for('sensor_.edit_sensor', id=sensor.device.id) }}" class="btn-secondary">Edit</a>
+                        <form action="{{ url_for('sensor_.delete_sensor') }}" method="POST" class="inline-form" onsubmit="return confirm('Are you sure you want to delete this sensor?');">
+                            <input type="hidden" name="id" value="{{ sensor.device.id }}">
+                            <button type="submit" class="btn-danger">Delete</button>
+                        </form>
                     </div>
                 </div>
                 {% else %}
@@ -55,6 +59,10 @@
                     </div>
                     <div class="device-actions">
                         <a href="{{ url_for('actuator_.edit_actuator', id=actuator.device.id) }}" class="btn-secondary">Edit</a>
+                        <form action="{{ url_for('actuator_.delete_actuator') }}" method="POST" class="inline-form" onsubmit="return confirm('Are you sure you want to delete this actuator?');">
+                            <input type="hidden" name="id" value="{{ actuator.device.id }}">
+                            <button type="submit" class="btn-danger">Delete</button>
+                        </form>
                     </div>
                 </div>
                 {% else %}

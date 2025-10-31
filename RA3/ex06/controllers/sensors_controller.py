@@ -101,3 +101,23 @@ def update_sensor():
         flash(f"Erro ao atualizar sensor: {str(e)}", "error")
         # Tenta voltar para a edição do mesmo id, se existir
         return redirect(url_for("sensor_.edit_sensor", id=request.form.get("id")))
+
+
+@sensor_.route('/delete_sensor', methods=['POST'])
+@login_required
+def delete_sensor():
+    try:
+        device_id = request.form.get('id')
+        if not device_id:
+            flash('Sensor ID is required', 'error')
+            return redirect(url_for('auth.dashboard'))
+
+        success, result = Sensor.delete_sensor(device_id)
+        if success:
+            flash('Sensor deleted successfully!', 'success')
+        else:
+            flash(f'Error deleting sensor: {result}', 'error')
+    except Exception as e:
+        flash(f'Error deleting sensor: {str(e)}', 'error')
+
+    return redirect(url_for('auth.dashboard'))

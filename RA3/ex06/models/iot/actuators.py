@@ -64,5 +64,20 @@ class Actuator(db.Model):
             db.session.rollback()
             return False, str(e)
 
+    @staticmethod
+    def delete_actuator(id):
+        """Delete actuator and its device by device id (cascades to actuator)."""
+        try:
+            device = Device.query.filter_by(id=id).first()
+            if not device:
+                return False, "Device not found"
+
+            db.session.delete(device)
+            db.session.commit()
+            return True, None
+        except Exception as e:
+            db.session.rollback()
+            return False, str(e)
+
     def __repr__(self):
         return f'<Actuator {self.command_topic}>'

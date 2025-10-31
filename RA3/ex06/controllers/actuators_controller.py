@@ -68,3 +68,22 @@ def update_actuator():
     except Exception as e:
         flash(f'Error updating actuator: {str(e)}', 'error')
         return redirect(url_for('actuator_.edit_actuator', id=id))
+
+@actuator_.route('/delete_actuator', methods=['POST'])
+@login_required
+def delete_actuator():
+    try:
+        device_id = request.form.get('id')
+        if not device_id:
+            flash('Actuator ID is required', 'error')
+            return redirect(url_for('auth.dashboard'))
+
+        success, result = Actuator.delete_actuator(device_id)
+        if success:
+            flash('Actuator deleted successfully!', 'success')
+        else:
+            flash(f'Error deleting actuator: {result}', 'error')
+    except Exception as e:
+        flash(f'Error deleting actuator: {str(e)}', 'error')
+
+    return redirect(url_for('auth.dashboard'))

@@ -65,5 +65,20 @@ class Sensor(db.Model):
             db.session.rollback()
             return False, str(e)
 
+    @staticmethod
+    def delete_sensor(id):
+        """Delete sensor and its device by device id (cascades to sensor)."""
+        try:
+            device = Device.query.filter_by(id=id).first()
+            if not device:
+                return False, "Device not found"
+
+            db.session.delete(device)
+            db.session.commit()
+            return True, None
+        except Exception as e:
+            db.session.rollback()
+            return False, str(e)
+
     def __repr__(self):
         return f'<Sensor {self.topic}>'
