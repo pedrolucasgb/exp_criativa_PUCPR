@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+
+{% block title %}Update Sensor{% endblock %}
+
+{% block content %}
+<div class="form-container">
+    <h2>Update Sensor</h2>
+    <form method="POST" action="{{ url_for('sensor_.update_sensor') }}">
+        <input type="hidden" name="id" value="{{ sensor[1].id }}">
+        
+        <div class="form-group">
+            <label for="name">Name:</label>
+            <input type="text" id="name" name="name" value="{{ sensor[1].name }}" required>
+        </div>
+        
+        <div class="form-group">
+            <label for="brand">Brand:</label>
+            <input type="text" id="brand" name="brand" value="{{ sensor[1].brand }}" required>
+        </div>
+        
+        <div class="form-group">
+            <label for="model">Model:</label>
+            <input type="text" id="model" name="model" value="{{ sensor[1].model }}" required>
+        </div>
+        
+        <div class="form-group">
+            <label for="topic">Topic:</label>
+            <input type="text" id="topic" name="topic" value="{{ sensor[0].topic }}" required>
+        </div>
+        
+        <div class="form-group">
+            <label for="unit">Unit:</label>
+            <input type="text" id="unit" name="unit" value="{{ sensor[0].unit }}" required>
+        </div>
+        
+        <div class="form-group checkbox">
+            <label for="is_active">
+                <input type="checkbox" id="is_active" name="is_active" {% if sensor[1].is_active %}checked{% endif %}>
+                Active
+            </label>
+        </div>
+        
+        <div class="form-group">
+            <button type="submit" class="btn-primary">Update Sensor</button>
+            <a href="{{ url_for('auth.dashboard') }}" class="btn-secondary">Cancel</a>
+        </div>
+    </form>
+</div>
+{% endblock %}

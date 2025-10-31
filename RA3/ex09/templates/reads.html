@@ -1,0 +1,94 @@
+{% extends "base.html" %}
+
+{% block title %}Sensor Reads{% endblock %}
+
+{% block content %}
+<div class="dashboard-container">
+    <div class="dashboard-header">
+        <h1>Sensor Readings</h1>
+        <div class="dashboard-actions">
+            <a href="{{ url_for('auth.dashboard') }}" class="btn-secondary">Back to Dashboard</a>
+        </div>
+    </div>
+
+    <div class="dashboard-content">
+        <div class="device-section">
+            <h2>Recent Readings</h2>
+            <div class="table-container">
+                {% if reads %}
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Date/Time</th>
+                            <th>Sensor</th>
+                            <th>Device</th>
+                            <th>Topic</th>
+                            <th>Value</th>
+                            <th>Unit</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for read in reads %}
+                        <tr>
+                            <td>{{ read.Read.id }}</td>
+                            <td>{{ read.Read.read_datetime.strftime('%Y-%m-%d %H:%M:%S') }}</td>
+                            <td>{{ read.Device.name }}</td>
+                            <td>{{ read.Device.brand }} {{ read.Device.model }}</td>
+                            <td><code>{{ read.Sensor.topic }}</code></td>
+                            <td><strong>{{ read.Read.value }}</strong></td>
+                            <td>{{ read.Sensor.unit }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                {% else %}
+                <div class="empty-state">
+                    <p>No sensor readings yet.</p>
+                    <p>Readings will appear here when sensors publish data via MQTT.</p>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.table-container {
+    overflow-x: auto;
+    background-color: white;
+    border-radius: 8px;
+    padding: 1rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.data-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.data-table thead {
+    background-color: #2c3e50;
+    color: white;
+}
+
+.data-table th,
+.data-table td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+
+.data-table tbody tr:hover {
+    background-color: #f5f5f5;
+}
+
+.data-table code {
+    background-color: #f4f4f4;
+    padding: 2px 6px;
+    border-radius: 3px;
+    font-family: monospace;
+    font-size: 0.9em;
+}
+</style>
+{% endblock %}

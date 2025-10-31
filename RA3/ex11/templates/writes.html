@@ -1,0 +1,92 @@
+{% extends "base.html" %}
+
+{% block title %}Actuator Writes{% endblock %}
+
+{% block content %}
+<div class="dashboard-container">
+    <div class="dashboard-header">
+        <h1>Actuator Commands</h1>
+        <div class="dashboard-actions">
+            <a href="{{ url_for('auth.dashboard') }}" class="btn-secondary">Back to Dashboard</a>
+        </div>
+    </div>
+
+    <div class="dashboard-content">
+        <div class="device-section">
+            <h2>Recent Commands</h2>
+            <div class="table-container">
+                {% if writes %}
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Date/Time</th>
+                            <th>Actuator</th>
+                            <th>Device</th>
+                            <th>Command Topic</th>
+                            <th>Value</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for write in writes %}
+                        <tr>
+                            <td>{{ write.Write.id }}</td>
+                            <td>{{ write.Write.write_datetime.strftime('%Y-%m-%d %H:%M:%S') }}</td>
+                            <td>{{ write.Device.name }}</td>
+                            <td>{{ write.Device.brand }} {{ write.Device.model }}</td>
+                            <td><code>{{ write.Actuator.command_topic }}</code></td>
+                            <td><strong>{{ write.Write.value }}</strong></td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                {% else %}
+                <div class="empty-state">
+                    <p>No actuator commands yet.</p>
+                    <p>Commands will appear here when actuators receive data via MQTT.</p>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.table-container {
+    overflow-x: auto;
+    background-color: white;
+    border-radius: 8px;
+    padding: 1rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.data-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.data-table thead {
+    background-color: #2c3e50;
+    color: white;
+}
+
+.data-table th,
+.data-table td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+
+.data-table tbody tr:hover {
+    background-color: #f5f5f5;
+}
+
+.data-table code {
+    background-color: #f4f4f4;
+    padding: 2px 6px;
+    border-radius: 3px;
+    font-family: monospace;
+    font-size: 0.9em;
+}
+</style>
+{% endblock %}

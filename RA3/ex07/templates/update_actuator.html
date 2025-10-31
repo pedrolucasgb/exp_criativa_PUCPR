@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+
+{% block title %}Update Actuator{% endblock %}
+
+{% block content %}
+<div class="form-container">
+    <h2>Update Actuator</h2>
+    <form method="POST" action="{{ url_for('actuator_.update_actuator') }}">
+        <input type="hidden" name="id" value="{{ actuator[1].id }}">
+        
+        <div class="form-group">
+            <label for="name">Name:</label>
+            <input type="text" id="name" name="name" value="{{ actuator[1].name }}" required>
+        </div>
+        
+        <div class="form-group">
+            <label for="brand">Brand:</label>
+            <input type="text" id="brand" name="brand" value="{{ actuator[1].brand }}" required>
+        </div>
+        
+        <div class="form-group">
+            <label for="model">Model:</label>
+            <input type="text" id="model" name="model" value="{{ actuator[1].model }}" required>
+        </div>
+        
+        <div class="form-group">
+            <label for="command_topic">Command Topic:</label>
+            <input type="text" id="command_topic" name="command_topic" value="{{ actuator[0].command_topic }}" required>
+        </div>
+        
+        <div class="form-group checkbox">
+            <label for="is_active">
+                <input type="checkbox" id="is_active" name="is_active" {% if actuator[1].is_active %}checked{% endif %}>
+                Active
+            </label>
+        </div>
+        
+        <div class="form-group">
+            <button type="submit" class="btn-primary">Update Actuator</button>
+            <a href="{{ url_for('auth.dashboard') }}" class="btn-secondary">Cancel</a>
+        </div>
+    </form>
+</div>
+{% endblock %}
