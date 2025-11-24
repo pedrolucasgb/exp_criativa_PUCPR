@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block title %}Login{% endblock %}
+
+{% block content %}
+<div class="auth-container">
+    <div class="auth-box">
+        <h1>📡 Login</h1>
+        <p class="subtitle">Acesse o sistema IoT com MQTT</p>
+        
+        <form method="POST" action="{{ url_for('auth.login') }}">
+            <div class="form-group">
+                <label for="username">Usuário:</label>
+                <input type="text" id="username" name="username" required autofocus>
+            </div>
+            
+            <div class="form-group">
+                <label for="password">Senha:</label>
+                <input type="password" id="password" name="password" required>
+            </div>
+            
+            <button type="submit" class="btn-primary">Entrar</button>
+        </form>
+        
+        <p class="auth-footer">
+            Não tem uma conta? <a href="{{ url_for('auth.register') }}">Cadastre-se aqui</a>
+        </p>
+    </div>
+</div>
+{% endblock %}

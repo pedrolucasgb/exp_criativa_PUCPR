@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+
+{% block title %}Histórico - {{ sensor.name }}{% endblock %}
+
+{% block content %}
+<div class="dashboard-container">
+    <div class="dashboard-header">
+        <h1>📊 Histórico: {{ sensor.name }}</h1>
+        <div class="dashboard-actions">
+            <a href="{{ url_for('readings.history') }}" class="btn-secondary">Todos os Sensores</a>
+            <a href="{{ url_for('auth.dashboard') }}" class="btn-secondary">Voltar</a>
+        </div>
+    </div>
+
+    <div class="sensor-details">
+        <div class="detail-item">
+            <strong>Marca:</strong> {{ sensor.brand }}
+        </div>
+        <div class="detail-item">
+            <strong>Modelo:</strong> {{ sensor.model }}
+        </div>
+        <div class="detail-item">
+            <strong>Unidade:</strong> {{ sensor.unit }}
+        </div>
+        <div class="detail-item">
+            <strong>Tópico MQTT:</strong> <span class="mqtt-topic">{{ sensor.topic }}</span>
+        </div>
+        <div class="detail-item">
+            <strong>Status:</strong> 
+            <span class="sensor-status {{ 'status-active' if sensor.is_active else 'status-inactive' }}">
+                {{ 'Ativo' if sensor.is_active else 'Inativo' }}
+            </span>
+        </div>
+    </div>
+
+    <div class="dashboard-content">
+        <h2>Últimas Leituras</h2>
+        
+        {% if readings %}
+        <div class="table-container">
+            <table class="readings-table">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Data/Hora</th>
+                        <th>Valor</th>
+                        <th>Unidade</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for reading in readings %}
+                    <tr>
+                        <td>{{ loop.index }}</td>
+                        <td>{{ reading.read_datetime.strftime('%d/%m/%Y %H:%M:%S') }}</td>
+                        <td class="value-cell">{{ "%.2f"|format(reading.value) }}</td>
+                        <td>{{ sensor.unit }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <p class="table-info">Exibindo as últimas 100 leituras deste sensor</p>
+        {% else %}
+        <div class="empty-state">
+            <p>📭 Nenhuma leitura registrada para este sensor.</p>
+            <p>Aguardando dados via MQTT no tópico: <code>{{ sensor.topic }}</code></p>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

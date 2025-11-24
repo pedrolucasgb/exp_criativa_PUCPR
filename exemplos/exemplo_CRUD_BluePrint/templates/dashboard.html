@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+<div class="dashboard-container">
+    <div class="dashboard-header">
+        <h1>Bem-vindo, {{ current_user.username }}!</h1>
+        <div class="dashboard-actions">
+            <a href="{{ url_for('sensor.register_sensor') }}" class="btn-primary">+ Adicionar Sensor</a>
+        </div>
+    </div>
+
+    <div class="dashboard-content">
+        <div class="sensors-section">
+            <h2>Sensores Cadastrados</h2>
+            
+            {% if sensors %}
+            <div class="sensor-grid">
+                {% for sensor in sensors %}
+                <div class="sensor-card">
+                    <div class="sensor-header">
+                        <h3>{{ sensor.name }}</h3>
+                        <span class="sensor-status {{ 'status-active' if sensor.is_active else 'status-inactive' }}">
+                            {{ 'Ativo' if sensor.is_active else 'Inativo' }}
+                        </span>
+                    </div>
+                    
+                    <div class="sensor-info">
+                        <div class="info-row">
+                            <span class="info-label">Marca:</span>
+                            <span class="info-value">{{ sensor.brand }}</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Modelo:</span>
+                            <span class="info-value">{{ sensor.model }}</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Unidade:</span>
+                            <span class="info-value">{{ sensor.unit }}</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Tópico:</span>
+                            <span class="info-value">{{ sensor.topic }}</span>
+                        </div>
+                    </div>
+                    
+                    <div class="sensor-actions">
+                        <a href="{{ url_for('sensor.edit_sensor', id=sensor.id) }}" class="btn-secondary">Editar</a>
+                        <form action="{{ url_for('sensor.delete_sensor') }}" method="POST" class="inline-form" 
+                              onsubmit="return confirm('Tem certeza que deseja deletar este sensor?');">
+                            <input type="hidden" name="id" value="{{ sensor.id }}">
+                            <button type="submit" class="btn-danger">Deletar</button>
+                        </form>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <div class="empty-state">
+                <p>Nenhum sensor cadastrado ainda.</p>
+                <a href="{{ url_for('sensor.register_sensor') }}" class="btn-primary">Cadastrar primeiro sensor</a>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+
+{% block title %}Leituras Atuais{% endblock %}
+
+{% block content %}
+<div class="dashboard-container">
+    <div class="dashboard-header">
+        <h1>📊 Leituras Atuais dos Sensores</h1>
+        <div class="dashboard-actions">
+            <a href="{{ url_for('readings.history') }}" class="btn-secondary">Ver Histórico Completo</a>
+            <a href="{{ url_for('auth.dashboard') }}" class="btn-secondary">Voltar</a>
+        </div>
+    </div>
+
+    <div class="dashboard-content">
+        {% if latest_readings %}
+        <div class="readings-grid">
+            {% for item in latest_readings %}
+            <div class="reading-card">
+                <div class="reading-header">
+                    <h3>{{ item.sensor.name }}</h3>
+                    <span class="sensor-status {{ 'status-active' if item.sensor.is_active else 'status-inactive' }}">
+                        {{ 'Ativo' if item.sensor.is_active else 'Inativo' }}
+                    </span>
+                </div>
+                
+                {% if item.reading %}
+                <div class="reading-value">
+                    <span class="value">{{ "%.2f"|format(item.reading.value) }}</span>
+                    <span class="unit">{{ item.sensor.unit }}</span>
+                </div>
+                
+                <div class="reading-info">
+                    <p class="reading-time">
+                        🕐 {{ item.reading.read_datetime.strftime('%d/%m/%Y %H:%M:%S') }}
+                    </p>
+                    <p class="sensor-topic">📡 {{ item.sensor.topic }}</p>
+                </div>
+                
+                <div class="reading-actions">
+                    <a href="{{ url_for('readings.sensor_history', sensor_id=item.sensor.id) }}" class="btn-info">Ver Histórico</a>
+                </div>
+                {% else %}
+                <div class="no-reading">
+                    <p>❌ Nenhuma leitura recebida ainda</p>
+                    <small>Aguardando dados via MQTT</small>
+                </div>
+                {% endif %}
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="empty-state">
+            <p>Nenhum sensor cadastrado.</p>
+            <a href="{{ url_for('sensor.register_sensor') }}" class="btn-primary">Cadastrar Sensor</a>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

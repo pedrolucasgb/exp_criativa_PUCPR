@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+
+{% block title %}Cadastrar Sensor{% endblock %}
+
+{% block content %}
+<div class="form-container">
+    <h1>Cadastrar Novo Sensor</h1>
+    <p class="info-text">📡 O sensor receberá dados automaticamente via MQTT no tópico configurado</p>
+    
+    <form method="POST" action="{{ url_for('sensor.add_sensor') }}">
+        <div class="form-group">
+            <label for="name">Nome do Sensor:</label>
+            <input type="text" id="name" name="name" required autofocus placeholder="Ex: Temperatura Sala 1">
+        </div>
+        
+        <div class="form-group">
+            <label for="brand">Marca:</label>
+            <input type="text" id="brand" name="brand" required placeholder="Ex: DHT, BMP, LDR">
+        </div>
+        
+        <div class="form-group">
+            <label for="model">Modelo:</label>
+            <input type="text" id="model" name="model" required placeholder="Ex: DHT22, BMP280">
+        </div>
+        
+        <div class="form-group">
+            <label for="unit">Unidade de Medida:</label>
+            <input type="text" id="unit" name="unit" required placeholder="Ex: °C, %, hPa, lux">
+        </div>
+        
+        <div class="form-group">
+            <label for="topic">Tópico MQTT:</label>
+            <input type="text" id="topic" name="topic" required placeholder="Ex: /sensores/temp/sala1">
+            <small>O tópico deve ser único para cada sensor</small>
+        </div>
+        
+        <div class="form-group checkbox-group">
+            <label>
+                <input type="checkbox" id="is_active" name="is_active" checked>
+                Sensor Ativo (recebe dados MQTT)
+            </label>
+        </div>
+        
+        <div class="form-actions">
+            <button type="submit" class="btn-primary">Cadastrar Sensor</button>
+            <a href="{{ url_for('auth.dashboard') }}" class="btn-secondary">Cancelar</a>
+        </div>
+    </form>
+</div>
+{% endblock %}

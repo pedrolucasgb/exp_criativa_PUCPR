@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+
+{% block title %}Editar Sensor{% endblock %}
+
+{% block content %}
+<div class="form-container">
+    <h1>Editar Sensor</h1>
+    
+    <form method="POST" action="{{ url_for('sensor.update_sensor') }}">
+        <input type="hidden" name="id" value="{{ sensor.id }}">
+        
+        <div class="form-group">
+            <label for="name">Nome do Sensor:</label>
+            <input type="text" id="name" name="name" required value="{{ sensor.name }}" autofocus>
+        </div>
+        
+        <div class="form-group">
+            <label for="brand">Marca:</label>
+            <input type="text" id="brand" name="brand" required value="{{ sensor.brand }}">
+        </div>
+        
+        <div class="form-group">
+            <label for="model">Modelo:</label>
+            <input type="text" id="model" name="model" required value="{{ sensor.model }}">
+        </div>
+        
+        <div class="form-group">
+            <label for="unit">Unidade de Medida:</label>
+            <input type="text" id="unit" name="unit" required value="{{ sensor.unit }}">
+        </div>
+        
+        <div class="form-group">
+            <label for="topic">Tópico MQTT:</label>
+            <input type="text" id="topic" name="topic" required value="{{ sensor.topic }}">
+        </div>
+        
+        <div class="form-group checkbox-group">
+            <label>
+                <input type="checkbox" id="is_active" name="is_active" {% if sensor.is_active %}checked{% endif %}>
+                Sensor Ativo
+            </label>
+        </div>
+        
+        <div class="form-actions">
+            <button type="submit" class="btn-primary">Salvar Alterações</button>
+            <a href="{{ url_for('auth.dashboard') }}" class="btn-secondary">Cancelar</a>
+        </div>
+    </form>
+</div>
+{% endblock %}
