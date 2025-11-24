@@ -1,0 +1,111 @@
+{% extends "base.html" %}
+
+{% block title %}Cardápio{% endblock %}
+
+{% block content %}
+<h1>📋 Cardápio</h1>
+
+{% if request.args.get('comanda_id') %}
+<div class="card" style="background: #e7f3ff;">
+    <p><strong>Adicionando itens à Comanda #{{ request.args.get('comanda_id') }}</strong></p>
+    <a href="{{ url_for('auth.dashboard') }}" class="btn btn-primary">Voltar para Comandas</a>
+</div>
+{% endif %}
+
+<!-- Bebidas -->
+<div class="card">
+    <h2>🥤 Bebidas</h2>
+    <table>
+        <tr>
+            <th>Nome</th>
+            <th>Descrição</th>
+            <th>Preço</th>
+            <th>Ação</th>
+        </tr>
+        {% for item in itens if item.categoria == 'bebida' %}
+        <tr>
+            <td><strong>{{ item.nome }}</strong></td>
+            <td>{{ item.descricao }}</td>
+            <td>R$ {{ "%.2f"|format(item.preco) }}</td>
+            <td>
+                {% if request.args.get('comanda_id') %}
+                <form method="POST" action="{{ url_for('cardapio.adicionar_item') }}" style="display: flex; gap: 0.5rem;">
+                    <input type="hidden" name="comanda_id" value="{{ request.args.get('comanda_id') }}">
+                    <input type="hidden" name="item_id" value="{{ item.id }}">
+                    <input type="number" name="quantidade" value="1" min="1" style="width: 60px;">
+                    <button type="submit" class="btn btn-success">Adicionar</button>
+                </form>
+                {% else %}
+                <span style="color: #999;">Abra uma comanda primeiro</span>
+                {% endif %}
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+</div>
+
+<!-- Comidas -->
+<div class="card">
+    <h2>🍔 Comidas</h2>
+    <table>
+        <tr>
+            <th>Nome</th>
+            <th>Descrição</th>
+            <th>Preço</th>
+            <th>Ação</th>
+        </tr>
+        {% for item in itens if item.categoria == 'comida' %}
+        <tr>
+            <td><strong>{{ item.nome }}</strong></td>
+            <td>{{ item.descricao }}</td>
+            <td>R$ {{ "%.2f"|format(item.preco) }}</td>
+            <td>
+                {% if request.args.get('comanda_id') %}
+                <form method="POST" action="{{ url_for('cardapio.adicionar_item') }}" style="display: flex; gap: 0.5rem;">
+                    <input type="hidden" name="comanda_id" value="{{ request.args.get('comanda_id') }}">
+                    <input type="hidden" name="item_id" value="{{ item.id }}">
+                    <input type="number" name="quantidade" value="1" min="1" style="width: 60px;">
+                    <button type="submit" class="btn btn-success">Adicionar</button>
+                </form>
+                {% else %}
+                <span style="color: #999;">Abra uma comanda primeiro</span>
+                {% endif %}
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+</div>
+
+<!-- Sobremesas -->
+<div class="card">
+    <h2>🍰 Sobremesas</h2>
+    <table>
+        <tr>
+            <th>Nome</th>
+            <th>Descrição</th>
+            <th>Preço</th>
+            <th>Ação</th>
+        </tr>
+        {% for item in itens if item.categoria == 'sobremesa' %}
+        <tr>
+            <td><strong>{{ item.nome }}</strong></td>
+            <td>{{ item.descricao }}</td>
+            <td>R$ {{ "%.2f"|format(item.preco) }}</td>
+            <td>
+                {% if request.args.get('comanda_id') %}
+                <form method="POST" action="{{ url_for('cardapio.adicionar_item') }}" style="display: flex; gap: 0.5rem;">
+                    <input type="hidden" name="comanda_id" value="{{ request.args.get('comanda_id') }}">
+                    <input type="hidden" name="item_id" value="{{ item.id }}">
+                    <input type="number" name="quantidade" value="1" min="1" style="width: 60px;">
+                    <button type="submit" class="btn btn-success">Adicionar</button>
+                </form>
+                {% else %}
+                <span style="color: #999;">Abra uma comanda primeiro</span>
+                {% endif %}
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+</div>
+
+{% endblock %}

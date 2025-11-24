@@ -3,66 +3,169 @@
 {% block title %}Dashboard{% endblock %}
 
 {% block content %}
-<div class="dashboard-container">
-    <div class="dashboard-header">
-        <h1>Bem-vindo, {{ current_user.username }}!</h1>
-        <div class="dashboard-actions">
-            <a href="{{ url_for('sensor.register_sensor') }}" class="btn-primary">+ Adicionar Sensor</a>
-        </div>
-    </div>
+<h1>🍽️ Minhas Comandas</h1>
 
-    <div class="dashboard-content">
-        <div class="sensors-section">
-            <h2>Sensores Cadastrados</h2>
-            
-            {% if sensors %}
-            <div class="sensor-grid">
-                {% for sensor in sensors %}
-                <div class="sensor-card">
-                    <div class="sensor-header">
-                        <h3>{{ sensor.name }}</h3>
-                        <span class="sensor-status {{ 'status-active' if sensor.is_active else 'status-inactive' }}">
-                            {{ 'Ativo' if sensor.is_active else 'Inativo' }}
-                        </span>
-                    </div>
-                    
-                    <div class="sensor-info">
-                        <div class="info-row">
-                            <span class="info-label">Marca:</span>
-                            <span class="info-value">{{ sensor.brand }}</span>
-                        </div>
-                        <div class="info-row">
-                            <span class="info-label">Modelo:</span>
-                            <span class="info-value">{{ sensor.model }}</span>
-                        </div>
-                        <div class="info-row">
-                            <span class="info-label">Unidade:</span>
-                            <span class="info-value">{{ sensor.unit }}</span>
-                        </div>
-                        <div class="info-row">
-                            <span class="info-label">Tópico:</span>
-                            <span class="info-value">{{ sensor.topic }}</span>
-                        </div>
-                    </div>
-                    
-                    <div class="sensor-actions">
-                        <a href="{{ url_for('sensor.edit_sensor', id=sensor.id) }}" class="btn-secondary">Editar</a>
-                        <form action="{{ url_for('sensor.delete_sensor') }}" method="POST" class="inline-form" 
-                              onsubmit="return confirm('Tem certeza que deseja deletar este sensor?');">
-                            <input type="hidden" name="id" value="{{ sensor.id }}">
-                            <button type="submit" class="btn-danger">Deletar</button>
-                        </form>
-                    </div>
-                </div>
+<!-- Botão para abrir nova comanda -->
+<div class="card">
+    <h3>Abrir Nova Comanda</h3>
+    <form method="POST" action="{{ url_for('cardapio.abrir_comanda') }}" style="display: flex; gap: 1rem; align-items: end; flex-wrap: wrap;">
+        <div class="form-group" style="flex: 1; min-width: 200px; margin: 0;">
+            <label>Número da Mesa:</label>
+            <input type="number" name="numero_mesa" required min="1" placeholder="Ex: 5">
+        </div>
+        
+        {% if current_user.is_atendente() or current_user.is_caixa() %}
+        <div class="form-group" style="flex: 1; min-width: 200px; margin: 0;">
+            <label>Cliente:</label>
+            <select name="cliente_id" required>
+                <option value="">-- Selecione o Cliente --</option>
+                {% for usuario in usuarios_clientes %}
+                <option value="{{ usuario.id }}">{{ usuario.nome }} ({{ usuario.email }})</option>
                 {% endfor %}
+            </select>
+        </div>
+        {% endif %}
+        
+        <button type="submit" class="btn btn-success">Abrir Comanda</button>
+    </form>
+</div>
+
+<!-- Lista de comandas -->
+{% if comandas %}
+    {% for comanda in comandas %}
+    <div class="card">
+        <div style="display: flex; justify-content: space-between; align-items: start;">
+            <div>
+                <h3>Comanda #{{ comanda.id }} - Mesa {{ comanda.numero_mesa }}</h3>
+                <p><strong>Cliente:</strong> {{ comanda.cliente.nome }}</p>
+                <p><strong>Status:</strong> 
+                    {% if comanda.status == 'aberta' %}
+                        <span style="color: green;">● Aberta</span>
+                    {% elif comanda.status == 'fechada' %}
+                        <span style="color: orange;">● Fechada</span>
+                    {% else %}
+                        <span style="color: blue;">● Paga</span>
+                    {% endif %}
+                </p>
+                <p><strong>Total:</strong> R$ {{ "%.2f"|format(comanda.valor_total) }}</p>
             </div>
-            {% else %}
-            <div class="empty-state">
-                <p>Nenhum sensor cadastrado ainda.</p>
-                <a href="{{ url_for('sensor.register_sensor') }}" class="btn-primary">Cadastrar primeiro sensor</a>
-            </div>
+            
+            {% if comanda.status == 'aberta' and (current_user.is_atendente() or current_user.is_caixa()) %}
+            <form method="POST" action="{{ url_for('cardapio.fechar_comanda', comanda_id=comanda.id) }}">
+                <button type="submit" class="btn btn-primary">Fechar Comanda</button>
+            </form>
             {% endif %}
         </div>
+        
+        <!-- Itens da comanda -->
+        {% if comanda.itens %}
+        <hr style="margin: 1rem 0;">
+        <h4>Itens:</h4>
+        <table>
+            <tr>
+                <th>Item</th>
+                <th>Qtd</th>
+                <th>Preço Unit.</th>
+                <th>Subtotal</th>
+                {% if (current_user.is_atendente() and comanda.status == 'aberta') or (current_user.is_caixa() and comanda.status != 'paga') %}
+                <th>Ações</th>
+                {% endif %}
+            </tr>
+            {% for item in comanda.itens %}
+            <tr>
+                <td>{{ item.item_cardapio.nome }}</td>
+                <td>
+                    {% if (current_user.is_atendente() and comanda.status == 'aberta') or (current_user.is_caixa() and comanda.status != 'paga') %}
+                    <form method="POST" action="{{ url_for('cardapio.editar_item', item_id=item.id) }}" style="display: inline-flex; gap: 0.3rem; align-items: center; margin: 0;">
+                        <input type="number" name="quantidade" value="{{ item.quantidade }}" min="1" style="width: 60px; padding: 0.3rem;" required>
+                        <button type="submit" class="btn" style="background: #3498db; padding: 0.3rem 0.5rem; font-size: 0.8em;">✓</button>
+                    </form>
+                    {% else %}
+                    {{ item.quantidade }}
+                    {% endif %}
+                </td>
+                <td>R$ {{ "%.2f"|format(item.preco_unitario) }}</td>
+                <td>R$ {{ "%.2f"|format(item.subtotal) }}</td>
+                {% if (current_user.is_atendente() and comanda.status == 'aberta') or (current_user.is_caixa() and comanda.status != 'paga') %}
+                <td>
+                    <form method="POST" action="{{ url_for('cardapio.remover_item', item_id=item.id) }}" style="margin: 0;">
+                        <button type="submit" class="btn" style="background: #e74c3c; padding: 0.3rem 0.6rem; font-size: 0.85em;" onclick="return confirm('Remover este item?')">🗑️ Remover</button>
+                    </form>
+                </td>
+                {% endif %}
+            </tr>
+            {% endfor %}
+        </table>
+        {% else %}
+        <p style="color: #999; margin-top: 1rem;">Nenhum item adicionado ainda.</p>
+        {% endif %}
+        
+        <!-- Adicionar item (apenas se aberta e for do cliente ou atendente/caixa) -->
+        <!-- Caixa pode adicionar em comandas abertas ou fechadas -->
+        {% if (comanda.status == 'aberta' and (comanda.cliente_id == current_user.id or current_user.is_atendente())) or (current_user.is_caixa() and comanda.status != 'paga') %}
+        <hr style="margin: 1rem 0;">
+        <a href="{{ url_for('cardapio.cardapio') }}?comanda_id={{ comanda.id }}" class="btn btn-success">+ Adicionar Itens</a>
+        {% endif %}
     </div>
+    {% endfor %}
+{% else %}
+    <div class="card">
+        <p style="text-align: center; color: #999;">Você ainda não tem comandas. Abra uma nova comanda acima!</p>
+    </div>
+{% endif %}
+
+<!-- Seção para o Caixa processar pagamentos -->
+{% if current_user.is_caixa() and comandas_fechadas %}
+<hr style="margin: 2rem 0;">
+<h2>💳 Comandas para Pagamento</h2>
+{% for comanda in comandas_fechadas %}
+<div class="card" style="background-color: #fffbf0;">
+    <div style="display: flex; justify-content: space-between; align-items: start;">
+        <div>
+            <h3>Comanda #{{ comanda.id }} - Mesa {{ comanda.numero_mesa }}</h3>
+            <p><strong>Cliente:</strong> {{ comanda.cliente.nome }}</p>
+            <p><strong>Total a Pagar:</strong> <span style="font-size: 1.3em; color: #e67e22;">R$ {{ "%.2f"|format(comanda.valor_total) }}</span></p>
+        </div>
+        
+        <form method="POST" action="{{ url_for('cardapio.processar_pagamento', comanda_id=comanda.id) }}" style="display: flex; gap: 1rem; align-items: end;">
+            <div class="form-group" style="margin: 0;">
+                <label>Forma de Pagamento:</label>
+                <select name="forma_pagamento" required>
+                    <option value="dinheiro">Dinheiro</option>
+                    <option value="cartao_credito">Cartão de Crédito</option>
+                    <option value="cartao_debito">Cartão de Débito</option>
+                    <option value="pix">PIX</option>
+                </select>
+            </div>
+            <button type="submit" class="btn btn-success">Confirmar Pagamento</button>
+        </form>
+    </div>
+    
+    <!-- Itens da comanda -->
+    {% if comanda.itens %}
+    <hr style="margin: 1rem 0;">
+    <details>
+        <summary style="cursor: pointer; font-weight: bold;">Ver Itens ({{ comanda.itens|length }})</summary>
+        <table style="margin-top: 1rem;">
+            <tr>
+                <th>Item</th>
+                <th>Qtd</th>
+                <th>Preço Unit.</th>
+                <th>Subtotal</th>
+            </tr>
+            {% for item in comanda.itens %}
+            <tr>
+                <td>{{ item.item_cardapio.nome }}</td>
+                <td>{{ item.quantidade }}</td>
+                <td>R$ {{ "%.2f"|format(item.preco_unitario) }}</td>
+                <td>R$ {{ "%.2f"|format(item.subtotal) }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+    </details>
+    {% endif %}
 </div>
+{% endfor %}
+{% endif %}
+
 {% endblock %}

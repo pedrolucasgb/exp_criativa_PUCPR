@@ -1,14 +1,17 @@
 from flask import Flask, redirect, url_for
 from flask_login import LoginManager
 import os
+from dotenv import load_dotenv
 
 from controllers.auth_controller import auth_bp
 from controllers.sensor_controller import sensor_bp
 
 from models.db import db
-from models.user import User
-import os
-from dotenv import load_dotenv
+from models.usuarios import Usuario
+from models.itens_cardapio import ItemCardapio
+from models.comanda import Comanda
+from models.item_comanda import ItemComanda
+from models.pagamento import Pagamento
 
 load_dotenv()
 
@@ -40,7 +43,7 @@ login_manager.login_message_category = 'warning'
 
 @login_manager.user_loader
 def load_user(user_id):
-    return User.get(int(user_id))
+    return Usuario.get(int(user_id))
 
 # Rota raiz
 @app.route('/')
@@ -49,7 +52,7 @@ def index():
 
 # Registrar blueprints
 app.register_blueprint(auth_bp)
-app.register_blueprint(sensor_bp, url_prefix='/sensors')
+app.register_blueprint(sensor_bp, url_prefix='/cardapio')
 
 # Criar tabelas do banco de dados
 def init_db():
@@ -58,18 +61,52 @@ def init_db():
         # Criar todas as tabelas
         db.create_all()
         
-        # Verificar se já existe usuário admin
-        admin = User.get_by_username('admin')
-        if not admin:
-            # Criar usuário admin padrão
-            User.save_user('admin', 'admin@admin.com', 'admin')
-            print("Usuário admin criado com sucesso!")
-            print("Username: admin")
-            print("Password: admin")
-        else:
-            print("Usuário admin já existe.")
+        # Criar usuários padrão
+        print("\n=== Inicializando Banco de Dados ===\n")
         
-        print("Banco de dados inicializado com sucesso!")
+        # Caixa
+        caixa = Usuario.get_by_email('caixa@restaurante.com')
+        if not caixa:
+            Usuario.save_usuario('Caixa Principal', 'caixa@restaurante.com', 'caixa123', 'caixa')
+            print("✓ Usuário CAIXA criado - Email: caixa@restaurante.com | Senha: caixa123")
+        
+        # Atendente
+        atendente = Usuario.get_by_email('atendente@restaurante.com')
+        if not atendente:
+            Usuario.save_usuario('Atendente 1', 'atendente@restaurante.com', 'atendente123', 'atendente')
+            print("✓ Usuário ATENDENTE criado - Email: atendente@restaurante.com | Senha: atendente123")
+        
+        # Cliente
+        cliente = Usuario.get_by_email('cliente@email.com')
+        if not cliente:
+            Usuario.save_usuario('Cliente Teste', 'cliente@email.com', 'cliente123', 'cliente')
+            print("✓ Usuário CLIENTE criado - Email: cliente@email.com | Senha: cliente123")
+        
+        # Criar itens do cardápio
+        if ItemCardapio.query.count() == 0:
+            print("\n=== Populando Cardápio ===\n")
+            
+            # Bebidas
+            ItemCardapio.save_item('Refrigerante', 'Coca-Cola, Guaraná ou Fanta', 'bebida', 5.00)
+            ItemCardapio.save_item('Suco Natural', 'Laranja, Limão ou Maracujá', 'bebida', 8.00)
+            ItemCardapio.save_item('Cerveja', 'Cerveja pilsen 350ml', 'bebida', 7.00)
+            ItemCardapio.save_item('Água Mineral', 'Água sem gás 500ml', 'bebida', 3.00)
+            
+            # Comidas
+            ItemCardapio.save_item('X-Burger', 'Hambúrguer, queijo, alface e tomate', 'comida', 25.00)
+            ItemCardapio.save_item('X-Salada', 'Hambúrguer, queijo, alface, tomate e milho', 'comida', 28.00)
+            ItemCardapio.save_item('X-Bacon', 'Hambúrguer, queijo, bacon e molho especial', 'comida', 30.00)
+            ItemCardapio.save_item('Batata Frita', 'Porção de batata frita crocante', 'comida', 18.00)
+            ItemCardapio.save_item('Pastel', 'Pastel de carne, queijo ou frango', 'comida', 12.00)
+            
+            # Sobremesas
+            ItemCardapio.save_item('Pudim', 'Pudim de leite condensado', 'sobremesa', 10.00)
+            ItemCardapio.save_item('Sorvete', 'Sorvete 2 bolas (vários sabores)', 'sobremesa', 12.00)
+            ItemCardapio.save_item('Brownie', 'Brownie de chocolate com sorvete', 'sobremesa', 15.00)
+            
+            print("✓ Cardápio populado com 12 itens")
+        
+        print("\n=== Banco de dados inicializado com sucesso! ===\n")
 
 if __name__ == '__main__':
     # Inicializar o banco de dados

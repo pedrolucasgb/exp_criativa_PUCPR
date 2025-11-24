@@ -3,28 +3,34 @@
 {% block title %}Login{% endblock %}
 
 {% block content %}
-<div class="auth-container">
-    <div class="auth-box">
-        <h1>Login</h1>
-        <p class="subtitle">Acesse o sistema de gerenciamento de sensores</p>
+<div class="card" style="max-width: 400px; margin: 3rem auto;">
+    <h1>🍴 Login - Restaurante</h1>
+    <p style="color: #666; margin: 1rem 0;">Entre com seu email e senha</p>
+    
+    <form method="POST">
+        <div class="form-group">
+            <label>Email:</label>
+            <input type="email" name="email" required autofocus placeholder="seu@email.com">
+        </div>
         
-        <form method="POST" action="{{ url_for('auth.login') }}">
-            <div class="form-group">
-                <label for="username">Usuário:</label>
-                <input type="text" id="username" name="username" required autofocus>
-            </div>
-            
-            <div class="form-group">
-                <label for="password">Senha:</label>
-                <input type="password" id="password" name="password" required>
-            </div>
-            
-            <button type="submit" class="btn-primary">Entrar</button>
-        </form>
+        <div class="form-group">
+            <label>Senha:</label>
+            <input type="password" name="password" required placeholder="********">
+        </div>
         
-        <p class="auth-footer">
-            Não tem uma conta? <a href="{{ url_for('auth.register') }}">Cadastre-se aqui</a>
-        </p>
-    </div>
+        <button type="submit" class="btn btn-primary" style="width: 100%;">Entrar</button>
+    </form>
+    
+    <p style="text-align: center; margin-top: 1rem;">
+        Não tem conta? <a href="{{ url_for('auth.register') }}">Cadastre-se</a>
+    </p>
+    
+    <hr style="margin: 1.5rem 0;">
+    <p style="font-size: 0.9rem; color: #666;">
+        <strong>Usuários de teste:</strong><br>
+        Caixa: caixa@restaurante.com / caixa123<br>
+        Atendente: atendente@restaurante.com / atendente123<br>
+        Cliente: cliente@email.com / cliente123
+    </p>
 </div>
 {% endblock %}
